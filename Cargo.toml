@@ -25,3 +25,7 @@ default = []
 nalgebra = ["dep:nalgebra"]
 ndarray = ["dep:ndarray"]
 polars = ["dep:polars"]
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs", "--html-in-header", "katex-header.html"]
