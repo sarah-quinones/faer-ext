@@ -1,0 +1,27 @@
+[package]
+name = "faer-ext"
+version = "0.1.0"
+edition = "2021"
+authors = ["sarah <>"]
+description = "faer-rs API for interoperability with external libraries"
+readme = "README.md"
+repository = "https://github.com/sarah-ek/faer-rs/"
+license = "MIT"
+keywords = ["math", "matrix", "linear-algebra"]
+rust-version = "1.67.0"
+
+[dependencies]
+faer = { version = "0.18.0", git="https://github.com/sarah-ek/faer-rs", default-features = false }
+nalgebra = { version = "0.32", default-features = false, optional = true }
+ndarray = { version = "0.15", default-features = false, optional = true }
+num-complex = { version = "0.4.5", default-features = false }
+polars = { version = "0.38", features = ["lazy"], optional = true }
+
+[dev-dependencies]
+nalgebra = { version = "0.32" }
+
+[features]
+default = []
+nalgebra = ["dep:nalgebra"]
+ndarray = ["dep:ndarray"]
+polars = ["dep:polars"]
