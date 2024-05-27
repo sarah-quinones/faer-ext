@@ -815,8 +815,7 @@ pub mod polars {
             let test_dtypes: bool = self
                 .clone()
                 .limit(0)
-                .collect()
-                .unwrap()
+                .collect()?
                 .dtypes()
                 .into_iter()
                 .map(|e| {
@@ -838,16 +837,19 @@ pub mod polars {
             let test_no_nulls: bool = self
                 .clone()
                 .null_count()
+                .cast_all(DataType::UInt64, true)
                 .with_column(
-                    fold_exprs(lit(0u64), |acc, x| Ok(Some(acc + x)), [col("*")]).alias("sum"),
+                    fold_exprs(
+                        lit(0).cast(DataType::UInt64),
+                        |acc, x| Ok(Some(acc + x)),
+                        [col("*")],
+                    )
+                    .alias("sum"),
                 )
                 .select(&[col("sum")])
-                .collect()
-                .unwrap()
-                .column("sum")
-                .unwrap()
-                .u64()
-                .unwrap()
+                .collect()?
+                .column("sum")?
+                .u64()?
                 .into_iter()
                 .map(|e| e.eq(&Some(0u64)))
                 .collect::<Vec<_>>()[0];
@@ -889,8 +891,7 @@ pub mod polars {
                 ) -> PolarsResult<Mat<$ty>> {
                     let df = lf
                         .select(&[col("*").cast(DataType::$dtype)])
-                        .collect()
-                        .unwrap();
+                        .collect()?;
 
                     let nrows = df.height();
                     let ncols = df.get_column_names().len();
