@@ -378,7 +378,7 @@ const _: () = {
     use faer::complex_native::*;
     use faer::prelude::*;
     use faer::SimpleEntity;
-    use ndarray::{ArrayView, ArrayViewMut, IntoDimension, Ix2, ShapeBuilder};
+    use ndarray::{ArrayView, ArrayViewMut, Ix2, ShapeBuilder};
     use num_complex::{Complex32, Complex64};
 
     impl<'a, T: SimpleEntity> IntoFaer for ArrayView<'a, T, Ix2> {
@@ -422,8 +422,7 @@ const _: () = {
             unsafe {
                 ArrayView::<'_, T, Ix2>::from_shape_ptr(
                     (nrows, ncols)
-                        .into_shape()
-                        .strides((row_stride, col_stride).into_dimension()),
+                        .strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -443,8 +442,7 @@ const _: () = {
             unsafe {
                 ArrayViewMut::<'_, T, Ix2>::from_shape_ptr(
                     (nrows, ncols)
-                        .into_shape()
-                        .strides((row_stride, col_stride).into_dimension()),
+                        .strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -490,8 +488,7 @@ const _: () = {
             unsafe {
                 ArrayView::<'_, Complex32, Ix2>::from_shape_ptr(
                     (nrows, ncols)
-                        .into_shape()
-                        .strides((row_stride, col_stride).into_dimension()),
+                        .strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -511,8 +508,7 @@ const _: () = {
             unsafe {
                 ArrayViewMut::<'_, Complex32, Ix2>::from_shape_ptr(
                     (nrows, ncols)
-                        .into_shape()
-                        .strides((row_stride, col_stride).into_dimension()),
+                        .strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -558,8 +554,7 @@ const _: () = {
             unsafe {
                 ArrayView::<'_, Complex64, Ix2>::from_shape_ptr(
                     (nrows, ncols)
-                        .into_shape()
-                        .strides((row_stride, col_stride).into_dimension()),
+                        .strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -579,8 +574,7 @@ const _: () = {
             unsafe {
                 ArrayViewMut::<'_, Complex64, Ix2>::from_shape_ptr(
                     (nrows, ncols)
-                        .into_shape()
-                        .strides((row_stride, col_stride).into_dimension()),
+                        .strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -593,7 +587,7 @@ const _: () = {
 const _: () =
     {
         use nalgebra::{Dim, Dyn, MatrixView, MatrixViewMut, ViewStorage, ViewStorageMut};
-        use ndarray::{ArrayView, ArrayViewMut, IntoDimension, Ix2, ShapeBuilder};
+        use ndarray::{ArrayView, ArrayViewMut, Ix2, ShapeBuilder};
         use num_complex::Complex;
 
         impl<'a, T> IntoNalgebra for ArrayView<'a, T, Ix2> {
@@ -670,8 +664,7 @@ const _: () =
                 unsafe {
                     ArrayView::<'_, T, Ix2>::from_shape_ptr(
                         (nrows, ncols)
-                            .into_shape()
-                            .strides((row_stride, col_stride).into_dimension()),
+                            .strides((row_stride, col_stride)),
                         ptr,
                     )
                 }
@@ -692,8 +685,7 @@ const _: () =
                 unsafe {
                     ArrayViewMut::<'_, T, Ix2>::from_shape_ptr(
                         (nrows, ncols)
-                            .into_shape()
-                            .strides((row_stride, col_stride).into_dimension()),
+                            .strides((row_stride, col_stride)),
                         ptr,
                     )
                 }
