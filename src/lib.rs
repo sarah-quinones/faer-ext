@@ -88,7 +88,7 @@ const _: () = {
             let strides = self.strides();
             let ptr = { self }.as_mut_ptr();
             unsafe {
-                faer::mat::from_raw_parts_mut::<'_, T>(
+                faer::mat::from_raw_parts_mut(
                     ptr,
                     nrows,
                     ncols,
