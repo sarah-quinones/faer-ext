@@ -1,5 +1,8 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 
+#[cfg(feature = "ndarray")]
+use ndarray::{IntoDimension, ShapeArg};
+
 /// Conversions from external library matrix views into `faer` types.
 pub trait IntoFaer {
     type Faer;
@@ -88,7 +91,7 @@ const _: () = {
             let strides = self.strides();
             let ptr = { self }.as_mut_ptr();
             unsafe {
-                faer::mat::from_raw_parts_mut::<'_, T>(
+                faer::mat::from_raw_parts_mut::<'_, T, _, _>(
                     ptr,
                     nrows,
                     ncols,
@@ -404,7 +407,9 @@ const _: () = {
             let strides: [isize; 2] = self.strides().try_into().unwrap();
             let ptr = { self }.as_mut_ptr();
             unsafe {
-                faer::mat::from_raw_parts_mut::<'_, T>(ptr, nrows, ncols, strides[0], strides[1])
+                faer::mat::from_raw_parts_mut::<'_, T, _, _>(
+                    ptr, nrows, ncols, strides[0], strides[1],
+                )
             }
         }
     }
@@ -421,8 +426,7 @@ const _: () = {
             let ptr = self.as_ptr();
             unsafe {
                 ArrayView::<'_, T, Ix2>::from_shape_ptr(
-                    (nrows, ncols)
-                        .strides((row_stride, col_stride)),
+                    (nrows, ncols).strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -441,8 +445,7 @@ const _: () = {
             let ptr = self.as_ptr_mut();
             unsafe {
                 ArrayViewMut::<'_, T, Ix2>::from_shape_ptr(
-                    (nrows, ncols)
-                        .strides((row_stride, col_stride)),
+                    (nrows, ncols).strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -487,8 +490,7 @@ const _: () = {
             let ptr = self.as_ptr() as *const Complex32;
             unsafe {
                 ArrayView::<'_, Complex32, Ix2>::from_shape_ptr(
-                    (nrows, ncols)
-                        .strides((row_stride, col_stride)),
+                    (nrows, ncols).strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -507,8 +509,7 @@ const _: () = {
             let ptr = self.as_ptr_mut() as *mut Complex32;
             unsafe {
                 ArrayViewMut::<'_, Complex32, Ix2>::from_shape_ptr(
-                    (nrows, ncols)
-                        .strides((row_stride, col_stride)),
+                    (nrows, ncols).strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -553,8 +554,7 @@ const _: () = {
             let ptr = self.as_ptr() as *const Complex64;
             unsafe {
                 ArrayView::<'_, Complex64, Ix2>::from_shape_ptr(
-                    (nrows, ncols)
-                        .strides((row_stride, col_stride)),
+                    (nrows, ncols).strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -573,8 +573,7 @@ const _: () = {
             let ptr = self.as_ptr_mut() as *mut Complex64;
             unsafe {
                 ArrayViewMut::<'_, Complex64, Ix2>::from_shape_ptr(
-                    (nrows, ncols)
-                        .strides((row_stride, col_stride)),
+                    (nrows, ncols).strides((row_stride, col_stride)),
                     ptr,
                 )
             }
@@ -663,8 +662,7 @@ const _: () =
 
                 unsafe {
                     ArrayView::<'_, T, Ix2>::from_shape_ptr(
-                        (nrows, ncols)
-                            .strides((row_stride, col_stride)),
+                        (nrows, ncols).strides((row_stride, col_stride)),
                         ptr,
                     )
                 }
@@ -684,8 +682,7 @@ const _: () =
 
                 unsafe {
                     ArrayViewMut::<'_, T, Ix2>::from_shape_ptr(
-                        (nrows, ncols)
-                            .strides((row_stride, col_stride)),
+                        (nrows, ncols).strides((row_stride, col_stride)),
                         ptr,
                     )
                 }
@@ -761,7 +758,8 @@ const _: () =
                 unsafe {
                     ArrayView::<'_, Complex<T>, Ix2>::from_shape_ptr(
                         (nrows, ncols)
-                            .into_shape()
+                            .into_shape_and_order()
+                            .0
                             .strides((row_stride, col_stride).into_dimension()),
                         ptr,
                     )
@@ -783,7 +781,8 @@ const _: () =
                 unsafe {
                     ArrayViewMut::<'_, Complex<T>, Ix2>::from_shape_ptr(
                         (nrows, ncols)
-                            .into_shape()
+                            .into_shape_and_order()
+                            .0
                             .strides((row_stride, col_stride).into_dimension()),
                         ptr,
                     )
