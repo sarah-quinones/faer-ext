@@ -11,20 +11,16 @@ keywords = ["math", "matrix", "linear-algebra"]
 rust-version = "1.67.0"
 
 [dependencies]
-faer = { version = "0.20.0", default-features = false }
-nalgebra = { version = "0.33", default-features = false, optional = true }
+faer = { version = "0.21.4", default-features = false }
+faer-traits = "0.21.0"
 ndarray = { version = "0.16", default-features = false, optional = true }
+numpy = "0.23.0"
+pyo3 = "*"
 num-complex = { version = "0.4.5", default-features = false }
-polars = { version = "0.40", features = ["lazy"], optional = true }
-
-[dev-dependencies]
-nalgebra = { version = "0.33" }
 
 [features]
-default = []
-nalgebra = ["dep:nalgebra"]
+default = ["ndarray"]
 ndarray = ["dep:ndarray"]
-polars = ["dep:polars"]
 
 [package.metadata.docs.rs]
 all-features = true
