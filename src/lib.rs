@@ -676,12 +676,9 @@ mod tests {
         pyo3::prepare_freethreaded_python();
 
         Python::with_gil(|py| {
-            let py_array: PyReadonlyArray2<f64> = pyarray![py, [1.0, 3.], [3., 2.]].extract().unwrap();
-            // let py_array: PyReadonlyArray2<f64> = array![[1.0f64, 0.], [0., 1.]].into_pyarray(py).extract().unwrap();
+            let py_array: PyReadonlyArray2<f64> = pyarray![py, [1., 0.], [0., 1.]].extract().unwrap();
             let I_faer = Mat::<f64>::identity(2, 2);
-            // println!("{:?}", py_array.into_faer());
             assert_eq!(py_array.into_faer(), I_faer.as_ref());
-
         });
     }
 }
