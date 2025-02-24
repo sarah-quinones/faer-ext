@@ -56,12 +56,13 @@ pub trait IntoNalgebraComplex {
 #[cfg_attr(docsrs, doc(cfg(feature = "numpy")))]
 const _: () = {
     use faer::prelude::*;
+    use faer_traits::RealField;
     use numpy::{PyReadonlyArray1, PyReadonlyArray2, PyArrayMethods};
     use numpy::Element;
 
     //impl<'a> IntoFaer for PyReadonlyArray2<'a, f64> {
     //    type Faer = MatRef<'a, f64>;
-    impl<'a, T: Element + 'a> IntoFaer for PyReadonlyArray2<'a, T> {
+    impl<'a, T: RealField + Element + 'a> IntoFaer for PyReadonlyArray2<'a, T> {
         type Faer = MatRef<'a, T>;
 
         #[track_caller]
@@ -71,12 +72,11 @@ const _: () = {
             let ncols = raw_arr.ncols();
             let strides: [isize; 2] = raw_arr.strides().try_into().unwrap();
             let ptr = raw_arr.as_ptr();
-            println!("{:?}", strides);
             unsafe { MatRef::from_raw_parts(ptr, nrows, ncols, strides[0], strides[1]) }
         }
     }
 
-    impl<'a, T: Element + 'a> IntoFaer for PyReadonlyArray1<'a, T> {
+    impl<'a, T: RealField + Element + 'a> IntoFaer for PyReadonlyArray1<'a, T> {
         type Faer = ColRef<'a, T>;
 
         #[track_caller]
@@ -676,7 +676,12 @@ mod tests {
         pyo3::prepare_freethreaded_python();
 
         Python::with_gil(|py| {
-            let py_array: PyReadonlyArray2<f64> = pyarray![py, [1., 0.], [0., 1.]].extract().unwrap();
+            let array1 = pyarray![py, [1., 0., 1., 1.]];
+            // let py_array1: PyReadonlyArray1<f64> = array1.readonly();
+            //assert_eq!(py_array1.into_faer(), mat1.transpose().col(0));
+
+            let array = pyarray![py, [1., 0.], [0., 1.]];
+            let py_array: PyReadonlyArray2<f64> = array.readonly();
             let I_faer = Mat::<f64>::identity(2, 2);
             assert_eq!(py_array.into_faer(), I_faer.as_ref());
         });
