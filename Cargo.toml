@@ -23,7 +23,7 @@ num-complex = { version = "0.4.5", default-features = false }
 nalgebra = { version = "0.33" }
 
 [features]
-default = ["numpy"]
+default = []
 nalgebra = ["dep:nalgebra"]
 ndarray = ["dep:ndarray"]
 numpy = ["dep:numpy", "dep:pyo3"]

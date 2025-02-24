@@ -56,13 +56,12 @@ pub trait IntoNalgebraComplex {
 #[cfg_attr(docsrs, doc(cfg(feature = "numpy")))]
 const _: () = {
     use faer::prelude::*;
-    use faer_traits::RealField;
     use numpy::{PyReadonlyArray1, PyReadonlyArray2, PyArrayMethods};
     use numpy::Element;
 
     //impl<'a> IntoFaer for PyReadonlyArray2<'a, f64> {
     //    type Faer = MatRef<'a, f64>;
-    impl<'a, T: RealField + Element + 'a> IntoFaer for PyReadonlyArray2<'a, T> {
+    impl<'a, T: Element + 'a> IntoFaer for PyReadonlyArray2<'a, T> {
         type Faer = MatRef<'a, T>;
 
         #[track_caller]
@@ -76,7 +75,7 @@ const _: () = {
         }
     }
 
-    impl<'a, T: RealField + Element + 'a> IntoFaer for PyReadonlyArray1<'a, T> {
+    impl<'a, T: Element + 'a> IntoFaer for PyReadonlyArray1<'a, T> {
         type Faer = ColRef<'a, T>;
 
         #[track_caller]
