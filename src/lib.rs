@@ -538,6 +538,42 @@ pub mod polars {
     polars_impl!(f64, Float64, polars_to_faer_f64);
 }
 
+#[cfg(feature = "numpy")]
+#[cfg_attr(docsrs, doc(cfg(feature = "numpy")))]
+const _: () = {
+    use faer::prelude::*;
+    use numpy::{PyReadonlyArray1, PyReadonlyArray2, PyArrayMethods};
+    use numpy::Element;
+
+    impl<'a, T: Element + 'a> IntoFaer for PyReadonlyArray2<'a, T> {
+        type Faer = MatRef<'a, T>;
+
+        #[track_caller]
+        fn into_faer(self) -> Self::Faer {
+            let raw_arr = self.as_raw_array();
+            let nrows = raw_arr.nrows();
+            let ncols = raw_arr.ncols();
+            let strides: [isize; 2] = raw_arr.strides().try_into().unwrap();
+            let ptr = raw_arr.as_ptr();
+            unsafe { MatRef::from_raw_parts(ptr, nrows, ncols, strides[0], strides[1]) }
+        }
+    }
+
+    impl<'a, T: Element + 'a> IntoFaer for PyReadonlyArray1<'a, T> {
+        type Faer = ColRef<'a, T>;
+
+        #[track_caller]
+        fn into_faer(self) -> Self::Faer {
+            let raw_arr = self.as_raw_array();
+            let nrows = raw_arr.len();
+            let strides: [isize; 1] = raw_arr.strides().try_into().unwrap();
+            let ptr = raw_arr.as_ptr();
+            unsafe { ColRef::from_raw_parts(ptr, nrows, strides[0]) }
+        }
+    }
+
+};
+
 #[cfg(test)]
 mod tests {
     #![allow(unused_imports)]
@@ -692,5 +728,38 @@ mod tests {
         let lf = DataFrame::new(vec![s0, s1, s2]).unwrap().lazy();
 
         polars_to_faer_f64(lf).unwrap();
+    }
+
+    #[cfg(feature = "numpy")]
+    #[test]
+    fn test_ext_numpy() {
+        use pyo3::{Bound, Python};
+        use numpy::{PyArray1, PyReadonlyArray1, PyReadonlyArray2, PyArrayMethods};
+        use numpy::ndarray::array;
+        use numpy::pyarray;
+        use pyo3::prelude::*;
+        pyo3::prepare_freethreaded_python();
+
+        Python::with_gil(|py| {
+            let arr_1 = PyArray1::from_vec(py, vec![1., 0., 1., 0.]);
+            let py_array1: PyReadonlyArray1<f64> = arr_1.readonly();
+            let expected_f64: Mat<f64> = mat![[1., 0., 1., 0.]];
+            assert_eq!(py_array1.into_faer(), expected_f64.transpose().col(0));
+
+            let arr_2 = pyarray![py, [1., 0.], [0., 1.]];
+            let py_array2: PyReadonlyArray2<f64> = arr_2.readonly();
+            let expected_f64 = Mat::<f64>::identity(2, 2);
+            assert_eq!(py_array2.into_faer(), expected_f64.as_ref());
+
+            let arr_1 = PyArray1::from_vec(py, vec![1., 0., 1., 0.]);
+            let py_array1: PyReadonlyArray1<f32> = arr_1.readonly();
+            let expected_f32: Mat<f32> = mat![[1., 0., 1., 0.]];
+            assert_eq!(py_array1.into_faer(), expected_f32.transpose().col(0));
+
+            let arr_2 = pyarray![py, [1., 0.], [0., 1.]];
+            let py_array2: PyReadonlyArray2<f32> = arr_2.readonly();
+            let expected_f32 = Mat::<f32>::identity(2, 2);
+            assert_eq!(py_array2.into_faer(), expected_f32.as_ref());
+        });
     }
 }
