@@ -370,9 +370,9 @@ checksum = "b90ca2580b73ab6a1f724b76ca11ab632df820fd6040c336200d2c1df7b3c82c"
 
 [[package]]
 name = "faer"
-version = "0.21.5"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "73f936091fb90d95348612147a851f886e8b2a97f7c2e39fa1e7a9af23d10ce9"
+checksum = "a6372c73a3627a293a7fe39087fe4cc6c34844451764a738257a8e1cf0469ffd"
 dependencies = [
  "bytemuck",
  "dyn-stack",
@@ -415,9 +415,9 @@ dependencies = [
 
 [[package]]
 name = "faer-traits"
-version = "0.21.0"
+version = "0.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2d0172aefb5f869561e558d5390657f1aa98ca3c51a09be69a4687064ebfb9a"
+checksum = "c1f92ec45f0c0920f6ddac861410894398d0983aacd09902358f44ec0ec2c26f"
 dependencies = [
  "bytemuck",
  "dyn-stack",
@@ -427,6 +427,7 @@ dependencies = [
  "num-complex",
  "num-traits",
  "pulp",
+ "qd",
  "reborrow",
 ]
 
@@ -1595,6 +1596,18 @@ dependencies = [
  "pyo3-build-config",
  "quote",
  "syn 2.0.99",
+]
+
+[[package]]
+name = "qd"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4f5e6e5312f7415999bb62c0891fb286a06b6dfaef820c1ab45ff448a9b8fef"
+dependencies = [
+ "bytemuck",
+ "libm",
+ "num-traits",
+ "pulp",
 ]
 
 [[package]]
