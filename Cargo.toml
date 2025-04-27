@@ -16,8 +16,8 @@ nalgebra = { version = "0.33", default-features = false, optional = true }
 ndarray = { version = "0.16", default-features = false, optional = true }
 num-complex = { version = "0.4.5", default-features = false }
 polars = { version = "0.40", features = ["lazy"], optional = true }
-numpy = { version="0.23.0", default-features = false, optional = true }
-pyo3 = { version="0.23", default-features = false, optional = true }
+numpy = { version="0.24.0", default-features = false, optional = true }
+pyo3 = { version="0.24", default-features = false, optional = true }
 
 [dev-dependencies]
 nalgebra = { version = "0.33" }
